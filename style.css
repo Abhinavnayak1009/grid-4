@@ -1,0 +1,545 @@
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #2c3e50;
+      color: white;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header styling to match original exactly */
+    .header {
+      background: #34495e;
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid #2c3e50;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .control-btn {
+      width: 50px;
+      height: 50px;
+      background: #95a5a6;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .control-btn:hover {
+      background: #bdc3c7;
+    }
+
+    .level-indicator {
+      background: #34495e;
+      padding: 10px 20px;
+      border-radius: 25px;
+      font-size: 18px;
+      font-weight: bold;
+      color: white;
+    }
+
+    .progress-container {
+      flex: 1;
+      max-width: 600px;
+      margin: 0 20px;
+      position: relative;
+    }
+
+    .progress-bar {
+      background: white;
+      height: 40px;
+      border-radius: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      background: #e67e22;
+      height: 100%;
+      border-radius: 20px;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .progress-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 24px;
+      font-weight: bold;
+      color: #8B0000;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .timer {
+      background: #95a5a6;
+      padding: 10px 20px;
+      border-radius: 25px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #2c3e50;
+    }
+
+    .game-title {
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    /* Main content area */
+    .main-content {
+      flex: 1;
+      position: relative;
+      background: #ecf0f1;
+    }
+
+    /* Symmetry overlay with clear separation */
+    .symmetry-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #ecf0f1;
+      display: none;
+      flex-direction: column;
+      z-index: 1000;
+    }
+
+    .symmetry-header {
+      background: #95a5a6;
+      padding: 15px;
+      text-align: right;
+      font-size: 28px;
+      font-weight: bold;
+      color: #2c3e50;
+    }
+
+    .symmetry-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+    }
+
+    .symmetry-question {
+      font-size: 24px;
+      color: #7f8c8d;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+
+    .grid-container {
+      background: #bdc3c7;
+      padding: 50px;
+      border-radius: 15px;
+      margin-bottom: 40px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+      position: relative;
+    }
+
+    /* Enhanced symmetry grid with CLEAR VISUAL SEPARATION */
+    .symmetry-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 35px) 80px repeat(5, 35px);
+      grid-template-rows: repeat(5, 35px);
+      gap: 8px; 
+      margin-bottom: 20px;
+      justify-content: center;
+      position: relative;
+    }
+
+    /* VERTICAL DIVIDER LINE for clear symmetry axis */
+    .symmetry-grid::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: -10px;
+      bottom: -10px;
+      width: 3px;
+      background: #e74c3c;
+      transform: translateX(-50%);
+      z-index: 10;
+      border-radius: 2px;
+      box-shadow: 0 0 8px rgba(231, 76, 60, 0.5);
+    }
+
+    /* SYMMETRY AXIS LABEL */
+    .symmetry-grid::after {
+      content: 'SYMMETRY AXIS';
+      position: absolute;
+      left: 50%;
+      top: -40px;
+      transform: translateX(-50%);
+      font-size: 12px;
+      font-weight: bold;
+      color: #e74c3c;
+      background: rgba(231, 76, 60, 0.1);
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+
+    .grid-cell {
+      width: 35px;
+      height: 35px;
+      background: #34495e;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      transition: all 0.2s ease;
+    }
+
+    /* Hide the middle column (symmetry axis) */
+    .grid-cell:nth-child(6),
+    .grid-cell:nth-child(17),
+    .grid-cell:nth-child(28),
+    .grid-cell:nth-child(39),
+    .grid-cell:nth-child(50) {
+      visibility: hidden;
+    }
+
+    .grid-cell:hover {
+      transform: scale(1.05);
+    }
+
+    .grid-cell.dot {
+      background: #34495e;
+      border-radius: 50%;
+      width: 12px;
+      height: 12px;
+      margin: 11.5px auto;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .symmetry-buttons {
+      display: flex;
+      gap: 40px;
+    }
+
+    .symmetry-btn {
+      width: 200px;
+      height: 80px;
+      border: none;
+      border-radius: 15px;
+      font-size: 32px;
+      font-weight: bold;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .symmetry-btn.yes {
+      background: #16537e;
+    }
+
+    .symmetry-btn.no {
+      background: #16537e;
+    }
+
+    .symmetry-btn:hover {
+      opacity: 0.8;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    }
+
+    /* Game board */
+    .game-board {
+      width: 100%;
+      height: 100%;
+      background: #bdc3c7;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .game-instruction {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(52, 73, 94, 0.9);
+      padding: 15px 30px;
+      border-radius: 25px;
+      font-size: 24px;
+      font-weight: bold;
+      color: white;
+      z-index: 100;
+    }
+
+    /* UNIFORM BALL STYLING - All balls same color initially */
+    .ball {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 14px;
+      /* ALL BALLS SAME COLOR - neutral gray */
+      background: #95a5a6;
+      color: #2c3e50;
+    }
+
+    /* Active ball gets bright color */
+    .ball.active {
+      background: #f39c12 !important;
+      transform: scale(1.3);
+      box-shadow: 0 6px 15px rgba(243, 156, 18, 0.6);
+      color: white !important;
+      animation: ballPulse 0.8s ease-in-out;
+    }
+
+    @keyframes ballPulse {
+      0%, 100% { transform: scale(1.3); }
+      50% { transform: scale(1.5); }
+    }
+
+    .ball.correct {
+      background: #27ae60 !important;
+      color: white !important;
+    }
+
+    .ball.correct::after {
+      content: "✓";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .ball.wrong {
+      background: #e74c3c !important;
+      color: white !important;
+    }
+
+    .ball.wrong::after {
+      content: "✕";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    /* Selection phase styling - balls clicked in sequence */
+    .ball.selected {
+      background: #3498db !important;
+      color: white !important;
+      transform: scale(1.1);
+      border: 3px solid #2980b9;
+    }
+
+    .ball.selected::after {
+      content: attr(data-sequence-number);
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    /* Start screen with timing controls */
+    .start-screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #bdc3c7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 500;
+    }
+
+    .start-content {
+      text-align: center;
+      background: rgba(44, 62, 80, 0.95);
+      padding: 40px 50px;
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      max-width: 500px;
+    }
+
+    .start-title {
+      font-size: 36px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #f1c40f;
+    }
+
+    .start-instruction {
+      font-size: 18px;
+      margin-bottom: 30px;
+      opacity: 0.9;
+      color: white;
+    }
+
+    .timing-controls {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin-bottom: 30px;
+    }
+
+    .timing-input {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .timing-label {
+      font-size: 16px;
+      font-weight: bold;
+      color: #ecf0f1;
+    }
+
+    .timing-slider {
+      width: 150px;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 3px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .start-btn {
+      padding: 15px 40px;
+      font-size: 24px;
+      font-weight: bold;
+      background: #27ae60;
+      color: white;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .start-btn:hover {
+      background: #2ecc71;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    }
+
+    /* MINIMAL selection progress at bottom - NO BLOCKING OVERLAY */
+    .selection-progress {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(52, 73, 94, 0.9);
+      padding: 12px 25px;
+      border-radius: 15px;
+      display: none;
+      z-index: 200;
+    }
+
+    .progress-info {
+      font-size: 16px;
+      font-weight: bold;
+      text-align: center;
+      color: white;
+    }
+
+    /* Submit button appears at bottom right during selection */
+    .submit-button {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      padding: 12px 25px;
+      font-size: 16px;
+      font-weight: bold;
+      background: #27ae60;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: none;
+      z-index: 200;
+    }
+
+    .submit-button:hover {
+      background: #2ecc71;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    /* Reset button at bottom left during selection */
+    .reset-button {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      padding: 12px 25px;
+      font-size: 16px;
+      font-weight: bold;
+      background: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: none;
+      z-index: 200;
+    }
+
+    .reset-button:hover {
+      background: #c0392b;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    /* Timer for symmetry overlay */
+    .symmetry-timer {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: #e74c3c;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 20px;
+      font-weight: bold;
+      min-width: 50px;
+      text-align: center;
+      z-index: 1100;
+    }
